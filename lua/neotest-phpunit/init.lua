@@ -7,6 +7,7 @@ local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 local utils = require("neotest-phpunit.utils")
 local config = require("neotest-phpunit.config")
+local docker = require("neotest-phpunit.docker")
 
 local dap_configuration
 
@@ -147,6 +148,11 @@ function NeotestAdapter.build_spec(args)
   local position = args.tree:data()
   local results_path = async.fn.tempname()
   local program = config.get_phpunit_cmd()
+
+  if docker.enabled then
+    program = docker:docker_cmd()
+    position.path = docker:remap(position.path)
+  end
 
   local script_args = {
     position.name ~= "tests" and position.path,
