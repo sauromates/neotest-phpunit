@@ -8,6 +8,10 @@ local separator = "::"
 ---@param namespace neotest.Position[] Any namespaces the position is within
 ---@return string
 M.make_test_id = function(position)
+  local docker = require("neotest-phpunit.docker")
+  if docker.enabled then
+    position.path = docker:remap(position.path)
+  end
   -- Treesitter starts line numbers from 0 so we add 1
   local id = position.path .. separator .. (tonumber(position.range[1]) + 1)
 
@@ -72,9 +76,9 @@ local function make_outputs(test, output_file)
     local error_message = test_failed[1][1]
     test_output.status = "failed"
     test_output.short = error_message
-    
+
     local errors = {}
-    
+
     -- Extract error lines from the stack trace
     -- Format: /path/to/file.php:123
     for line_info in error_message:gmatch("([^\n]+%.php:%d+)") do
@@ -86,7 +90,7 @@ local function make_outputs(test, output_file)
         })
       end
     end
-    
+
     -- If no matching errors found in the file, add error at test line
     if #errors == 0 then
       table.insert(errors, {
@@ -94,7 +98,7 @@ local function make_outputs(test, output_file)
         message = error_message,
       })
     end
-    
+
     test_output.errors = errors
   end
 
