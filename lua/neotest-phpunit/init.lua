@@ -152,6 +152,7 @@ function NeotestAdapter.build_spec(args)
   if docker.enabled then
     program = docker:docker_cmd()
     position.path = docker:remap(position.path)
+    results_path = docker:result_path()
   end
 
   local script_args = {
@@ -199,6 +200,9 @@ end
 ---@return neotest.Result[]
 function NeotestAdapter.results(test, result, tree)
   local output_file = test.context.results_path
+  if docker.enabled then
+    output_file = docker:remap_to_host(output_file)
+  end
 
   local ok, data = pcall(lib.files.read, output_file)
   if not ok then

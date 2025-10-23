@@ -3,6 +3,7 @@
 ---@field container_name? string
 ---@field container_path? string
 ---@field cmd? string
+---@field output? string
 local DockerPhpUnitConfig = {}
 DockerPhpUnitConfig.__index = DockerPhpUnitConfig
 
@@ -51,6 +52,20 @@ function DockerPhpUnitConfig:remap(path)
   local target = self.container_path or "/var/www/html"
 
   return path:gsub("^" .. vim.pesc(cwd), target)
+end
+
+function DockerPhpUnitConfig:remap_to_host(path)
+  local cwd = vim.fn.getcwd()
+  local from = self.container_path or "/var/www/html"
+
+  return path:gsub("^" .. vim.pesc(from), cwd)
+end
+
+function DockerPhpUnitConfig:result_path()
+  local output_dir = self.output or ".phpunit"
+  local result_path = vim.fn.getcwd() .. "/" .. output_dir .. "/results.xml"
+
+  return self:remap(result_path)
 end
 
 return DockerPhpUnitConfig:load()
