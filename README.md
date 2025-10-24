@@ -1,5 +1,7 @@
 # neotest-phpunit
 
+[![Tests](https://github.com/sauromates/neotest-phpunit/actions/workflows/ci.yml/badge.svg)](https://github.com/sauromates/neotest-phpunit/actions/workflows/ci.yml)
+
 This plugin is a fork of [neotest-phpunit](https://github.com/olimorris/neotest-phpunit),
 which allows to run PHPUnit tests in Docker environment.
 
