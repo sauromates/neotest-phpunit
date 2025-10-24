@@ -44,3 +44,9 @@ luac.out
 /vendor
 .phpunit.result.cache
 .php-cs-fixer.cache
+
+# Test dependencies
+/plenary.nvim
+/neotest
+/nvim-nio
+/nvim-treesitter

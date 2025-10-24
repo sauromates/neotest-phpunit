@@ -1,11 +1,15 @@
 #!/bin/bash
+
 tempfile=".test_output.tmp"
+cmd=(nvim --headless --noplugin -u specs/init.vim)
 
 if [[ -n $1 ]]; then
-	nvim --headless --noplugin -u specs/init.vim -c "PlenaryBustedFile $1" | tee "${tempfile}"
+    cmd+=("-c" "PlenaryBustedFile" "$1")
 else
-	nvim --headless --noplugin -u specs/init.vim -c "PlenaryBustedDirectory specs/ {minimal_init = 'specs/init.vim'}" | tee "${tempfile}"
+    cmd+={"-c" "PlenaryBustedDirectory" "specs/" "{minimal_init = 'specs/init.vim'}"}
 fi
+
+"${cmd[@]}" | tee "${tempfile}"
 
 # Plenary doesn't emit exit code 1 when tests have errors during setup
 errors=$(sed 's/\x1b\[[0-9;]*m//g' "${tempfile}" | awk '/(Errors|Failed) :/ {print $3}' | grep -v '0')
@@ -13,8 +17,8 @@ errors=$(sed 's/\x1b\[[0-9;]*m//g' "${tempfile}" | awk '/(Errors|Failed) :/ {pri
 rm "${tempfile}"
 
 if [[ -n $errors ]]; then
-  echo "Tests failed"
-  exit 1
+    echo "Tests failed"
+    exit 1
 fi
 
 exit 0
