@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 tempfile=".test_output.tmp"
 cmd=(nvim --headless --noplugin -u specs/init.vim)
