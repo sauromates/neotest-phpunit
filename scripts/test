@@ -4,6 +4,9 @@ set -e
 tempfile=".test_output.tmp"
 cmd=(nvim --headless --noplugin -u specs/init.vim)
 
+touch "$tempfile"
+trap 'rm "$tempfile"' ERR
+
 if [[ -n $1 ]]; then
     cmd+=("-c" "PlenaryBustedFile" "$1")
 else
